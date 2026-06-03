@@ -5,7 +5,7 @@ not yet in the repo** — this is the setup + export guide so the design can be
 reproduced and fabbed.
 
 > ⚠️ **Pin assignments are not final.** The firmware overlay
-> ([`../../firmware/config/nudge_controller.overlay`](../../firmware/config/nudge_controller.overlay))
+> ([`../../firmware/boards/shields/nudge_controller/nudge_controller.overlay`](../../firmware/boards/shields/nudge_controller/nudge_controller.overlay))
 > contains placeholder pins marked `TODO` — notably the 3rd matrix row and the
 > encoder A/B/SW pins. The PCB netlist and that overlay must agree before either
 > is trusted. Fill in the real values once the schematic is drawn.

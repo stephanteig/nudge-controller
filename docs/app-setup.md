@@ -65,7 +65,7 @@ In **Dashboard**:
 > ⚠️ The over-the-air write is **scaffolded but not finished** — the ZMK GATT
 > service UUIDs in [`Dashboard.jsx`](../app/src/components/Dashboard.jsx) are
 > placeholders. Until that's wired up, copy the generated keymap into
-> `firmware/config/nudge_controller.keymap` and reflash
+> `firmware/nudge_controller.keymap` and reflash
 > (see [firmware-setup.md](firmware-setup.md)).
 
 ## 7. AI Assist (optional)

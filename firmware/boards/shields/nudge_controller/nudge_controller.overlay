@@ -3,12 +3,9 @@
  *  Nudge Controller — hardware definition (devicetree overlay)
  *  Board: nice!nano v2 (nRF52840) · Pro Micro–compatible pinout
  *
- *  NOTE ON FILE LOCATION:
- *  For a standalone ZMK shield this devicetree normally lives at
- *      boards/shields/nudge_controller/nudge_controller.overlay
- *  We keep it here under config/ to match the project layout; ZMK applies a
- *  config/<shield>.overlay during the build. If you split this into its own
- *  shield module later, move this file (and copy it) into boards/shields/.
+ *  This is the shield's devicetree, auto-applied by Zephyr/ZMK whenever the
+ *  build is run with -DSHIELD=nudge_controller (the keymap + .conf live in the
+ *  ZMK_CONFIG dir, i.e. firmware/).
  *
  *  PIN MAPPING — READ ME:
  *  `&pro_micro N` refers to Pro Micro silkscreen pin N as exposed by the

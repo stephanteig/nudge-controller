@@ -7,17 +7,25 @@ out of the box — no custom C required, just devicetree + keymap config.
 
 ## What's here
 
+This follows the standard ZMK "config in a folder" layout so the GitHub Actions
+build works directly (`config_path: firmware`):
+
 ```
 firmware/
-├── config/
-│   ├── nudge_controller.keymap   # key bindings + the 4 layers (SCROLL/JOG/SHUTTLE/BT)
-│   ├── nudge_controller.conf     # BLE, deep sleep, encoder, battery reporting
-│   └── nudge_controller.overlay  # hardware: 3×7 matrix, encoder, pin assignments
+├── west.yml                      # ZMK manifest (pulls in zmkfirmware/zmk)
+├── build.yaml                    # build matrix: nice_nano_v2 + nudge_controller
+├── nudge_controller.keymap       # key bindings + the 4 layers (SCROLL/JOG/SHUTTLE/BT)
+├── nudge_controller.conf         # BLE, deep sleep, encoder, battery reporting
 └── boards/shields/nudge_controller/
+    ├── nudge_controller.overlay  # hardware: 3×7 matrix, encoder, pin assignments
     ├── nudge_controller.zmk.yml  # shield metadata (id, features)
     ├── Kconfig.shield            # declares the SHIELD_NUDGE_CONTROLLER symbol
     └── Kconfig.defconfig         # default config when the shield is built
 ```
+
+The keymap + `.conf` live at the `firmware/` root (the `ZMK_CONFIG` dir); the
+hardware `.overlay` lives in the shield folder, where ZMK auto-applies it for
+`-DSHIELD=nudge_controller`.
 
 ## How the keymap is organised
 
@@ -52,7 +60,6 @@ overlay for `TODO`):
    nice!nano those map to different Pro Micro positions than on a 32u4, so the
    `&pro_micro` indices for the encoder are best-guess and must be confirmed
    against the nice!nano v2 pinout and your board.
-3. **`.overlay` location** — for a fully standalone shield module this file
-   conventionally lives at `boards/shields/nudge_controller/nudge_controller.overlay`;
-   we keep it under `config/` to match the project layout. Move/copy it if you
-   publish the shield separately.
+3. **`.overlay` location** — the hardware devicetree lives at
+   `boards/shields/nudge_controller/nudge_controller.overlay`, the standard place
+   Zephyr/ZMK auto-applies it for the shield.

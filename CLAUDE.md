@@ -11,7 +11,10 @@
 
 ## Architecture
 - `prototype/`   → iPad web app (served via GitHub Pages) + Mac Node.js WebSocket server (robotjs)
-- `firmware/`    → ZMK shield for nice!nano v2 (keymap, conf, overlay, Kconfig, build.yaml)
+- `firmware/`    → ZMK shield for nice!nano v2. Standard ZMK "config in a folder"
+  layout (so `config_path: firmware` builds directly): `west.yml` + `build.yaml`
+  + `nudge_controller.keymap`/`.conf` at the root, and the hardware `.overlay`
+  (+ Kconfig + `.zmk.yml`) under `boards/shields/nudge_controller/`
 - `hardware/`    → KiCad PCB + case (guides only — CAD not yet started)
 - `app/`         → Electron + React + Vite + Tailwind configurator app
 - `docs/`        → Original Markdown source guides (bom, build-guide, firmware-setup, app-setup)

@@ -1,5 +1,5 @@
 # Default Kconfig values applied whenever the Nudge Controller shield is built.
-# Users can still override any of these in config/nudge_controller.conf.
+# Users can still override any of these in firmware/nudge_controller.conf.
 
 if SHIELD_NUDGE_CONTROLLER
 

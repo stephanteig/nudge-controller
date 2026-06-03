@@ -14,7 +14,7 @@ an evening if you've soldered before, a weekend if this is your first build.
 
 - Read the whole guide once.
 - Confirm the PCB pin assignments match
-  [`../firmware/config/nudge_controller.overlay`](../firmware/config/nudge_controller.overlay).
+  [`../firmware/boards/shields/nudge_controller/nudge_controller.overlay`](../firmware/boards/shields/nudge_controller/nudge_controller.overlay).
   Several pins there are still placeholders (`TODO`) until the KiCad design is
   finalised — see [hardware/pcb](../hardware/pcb/README.md).
 - Flash and bench-test the firmware *before* final assembly (see

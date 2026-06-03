@@ -3,7 +3,7 @@
  * ─────────────────────────────────────────────────────────────────────────────
  * Turns a layout object (as edited in the companion app) into a valid ZMK
  * `.keymap` string. The output mirrors the hand-written
- * firmware/config/nudge_controller.keymap: a shared 3×7 key grid across three
+ * firmware/nudge_controller.keymap: a shared 3×7 key grid across three
  * encoder-mode layers (SCROLL / JOG / SHUTTLE) plus a Bluetooth layer, and the
  * tap-cycle / hold-for-BT encoder button.
  *

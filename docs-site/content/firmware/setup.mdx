@@ -24,12 +24,14 @@ A `build-firmware.yml` workflow runs on changes to `firmware/**` and uploads the
 `.uf2` as an artifact.
 
 **Option B — fork [zmk-config](https://github.com/zmkfirmware/zmk-config-template)**
-and copy in `config/nudge_controller.*` and `boards/shields/nudge_controller/`.
+and copy in the `firmware/` contents: `nudge_controller.keymap`,
+`nudge_controller.conf`, `west.yml`, and `boards/shields/nudge_controller/`.
 
 <Callout type="info">
-In a clean ZMK shield module the `.overlay` lives in
-`boards/shields/nudge_controller/`. This repo keeps it under `config/` for
-layout convenience — move/copy it if your fork expects the standard location.
+The build uses the standard ZMK "config in a folder" layout: the keymap + `.conf`
+sit at the `firmware/` root (the `ZMK_CONFIG` dir, set via `config_path: firmware`),
+and the hardware `.overlay` lives in `boards/shields/nudge_controller/`, where ZMK
+auto-applies it for the shield.
 </Callout>
 
 ## Hardware pins (source of truth)

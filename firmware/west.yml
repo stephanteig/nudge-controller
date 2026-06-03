@@ -1,0 +1,13 @@
+manifest:
+  remotes:
+    - name: zmkfirmware
+      url-base: https://github.com/zmkfirmware
+  projects:
+    - name: zmk
+      remote: zmkfirmware
+      revision: main
+      import: app/west.yml
+  self:
+    # Must match config_path (the manifest dir), so `west init -l firmware`
+    # resolves the workspace topdir correctly.
+    path: firmware

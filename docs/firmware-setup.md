@@ -20,15 +20,16 @@ include:
 ```
 
 **B. Fork [zmk-config](https://github.com/zmkfirmware/zmk-config-template)** and
-copy in:
-- `config/nudge_controller.keymap`
-- `config/nudge_controller.conf`
-- `config/nudge_controller.overlay`
-- `boards/shields/nudge_controller/` (the whole folder)
+copy in the `firmware/` contents:
+- `nudge_controller.keymap`
+- `nudge_controller.conf`
+- `west.yml`
+- `boards/shields/nudge_controller/` (the whole folder, incl. `nudge_controller.overlay`)
 
-> Note: in a clean ZMK shield module the `.overlay` lives in
-> `boards/shields/nudge_controller/`. This repo keeps it under `config/` for
-> layout convenience; copy/move it if your fork expects the standard location.
+> Layout: this is the standard ZMK "config in a folder" structure. The keymap +
+> `.conf` sit at the `firmware/` root (the `ZMK_CONFIG` dir, `config_path: firmware`),
+> and the hardware `.overlay` lives in `boards/shields/nudge_controller/`, where
+> ZMK auto-applies it for the shield.
 
 ## 2. Build
 
@@ -64,7 +65,7 @@ Pair the controller with several hosts and switch instantly:
    Bluetooth menu.
 
 This is configured by `CONFIG_BT_MAX_PAIRED=5` /`CONFIG_BT_MAX_CONN=5` in
-[`nudge_controller.conf`](../firmware/config/nudge_controller.conf).
+[`nudge_controller.conf`](../firmware/nudge_controller.conf).
 
 ## 5. Encoder modes
 
@@ -77,7 +78,7 @@ This is configured by `CONFIG_BT_MAX_PAIRED=5` /`CONFIG_BT_MAX_CONN=5` in
 - **Easiest:** use the [configurator app](app-setup.md) to drag keys around,
   import your Resolve shortcuts, and export a keymap.
 - **By hand:** edit
-  [`config/nudge_controller.keymap`](../firmware/config/nudge_controller.keymap),
+  [`nudge_controller.keymap`](../firmware/nudge_controller.keymap),
   push, and reflash. ZMK keycodes are listed at
   <https://zmk.dev/docs/keymaps/list-of-keycodes>.
 

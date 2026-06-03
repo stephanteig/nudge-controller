@@ -13,7 +13,7 @@ build works directly (`config_path: firmware`):
 ```
 firmware/
 ├── west.yml                      # ZMK manifest (pulls in zmkfirmware/zmk)
-├── build.yaml                    # build matrix: nice_nano_v2 + nudge_controller
+├── build.yaml                    # build matrix: nice_nano@2.0.0//zmk + nudge_controller
 ├── nudge_controller.keymap       # key bindings + the 4 layers (SCROLL/JOG/SHUTTLE/BT)
 ├── nudge_controller.conf         # BLE, deep sleep, encoder, battery reporting
 └── boards/shields/nudge_controller/

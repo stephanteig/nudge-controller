@@ -26,6 +26,7 @@
 
 ## Hardware specs (source of truth for all firmware and PCB work)
 - **MCU:** nice!nano v2 (nRF52840), Pro Micro pinout, ZMK firmware
+  - ZMK build-target board id (post Zephyr-4.1 / hardware-model-v2): **`nice_nano@2.0.0//zmk`** (the old `nice_nano_v2` no longer exists)
 - **Encoder:** Alps EC11K, 24ppr, metal shaft, 100k cycle life
   - Pin A: Pro Micro pin 19 (P0.31 / F4 AVR label)
   - Pin B: Pro Micro pin 18 (P0.29 / F5 AVR label)

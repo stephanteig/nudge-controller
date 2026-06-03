@@ -1,3 +1,5 @@
+# Board id follows ZMK's post-Zephyr-4.1 hardware-model-v2 naming:
+#   nice!nano v2  →  nice_nano@2.0.0//zmk   (was: nice_nano_v2)
 include:
-  - board: nice_nano_v2
+  - board: nice_nano@2.0.0//zmk
     shield: nudge_controller

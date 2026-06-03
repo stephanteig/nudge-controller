@@ -15,7 +15,7 @@ GitHub Actions workflow, then push. The build matrix entry is:
 
 ```yaml
 include:
-  - board: nice_nano_v2
+  - board: nice_nano@2.0.0//zmk   # nice!nano v2 (ZMK hardware-model-v2 id)
     shield: nudge_controller
 ```
 
@@ -37,7 +37,7 @@ copy in the `firmware/` contents:
 2. Open the **Actions** tab — the "Build ZMK firmware" workflow runs
    automatically.
 3. When it's green, download the **firmware** artifact. Inside is
-   `nudge_controller nice_nano_v2.uf2`.
+   the `nudge_controller` `.uf2` for nice!nano v2.
 
 ## 3. Flash
 

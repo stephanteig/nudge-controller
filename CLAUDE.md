@@ -65,8 +65,14 @@ Every time a meaningful change is made to this repo:
 - [x] Add `.github/workflows/build-firmware.yml` for ZMK GitHub Actions build
 - [x] Add `firmware/build.yaml` ZMK build matrix
 - [ ] Configure GitHub Pages to deploy from the `gh-pages` branch (repo Settings → Pages) — required before the docs/prototype URLs go live
-- [ ] Verify `docs-site` builds locally (`cd docs-site && npm install && npm run build`) — deps were not installed in the dev environment; the Nextra 4 app-router scaffold is structurally complete but unbuilt here
-- [ ] Commit a `docs-site/package-lock.json` so CI can switch from `npm install` back to `npm ci`
+- [x] Verify `docs-site` builds locally — `npm ci && npm run build` produces `out/` with all 19 pages
+- [x] Commit `docs-site/package-lock.json`; CI uses `npm ci`
+
+> **Docs build note:** `docs-site/package.json` pins `zod` to `4.1.12` via
+> `overrides`. nextra/nextra-theme-docs 4.6.1 declare `zod: ^4.1.12`, but newer
+> 4.x (e.g. 4.4.3) made `z.custom()` reject `undefined`, which breaks the theme's
+> `Layout` schema (`children` validated as required) → "expected nonoptional,
+> received undefined → at children". Keep zod pinned until upstream is fixed.
 
 ## Stack reference
 - **Firmware:** ZMK (not QMK) — Bluetooth-first, nRF52840

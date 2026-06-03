@@ -1,8 +1,9 @@
 import nextra from 'nextra'
 
+// Nextra 4 reads MDX from content/ and is themed via app/layout.jsx
+// (the old `theme`/`themeConfig` keys are not valid Nextra 4 options).
 const withNextra = nextra({
-  theme: 'nextra-theme-docs',
-  themeConfig: './theme.config.jsx',
+  defaultShowCopyCode: true,
 })
 
 export default withNextra({

@@ -2,6 +2,8 @@
 title: Hardware
 ---
 
+import { Callout } from 'nextra/components'
+
 # Hardware
 
 The physical build is a single PCB plus a case. The board carries:
@@ -17,11 +19,11 @@ The physical build is a single PCB plus a case. The board carries:
 - [PCB](/hardware/pcb) — KiCad design + Gerber export + matrix/encoder assembly
 - [Case & Plate](/hardware/case) — 3D-printed enclosure + laser-cut switch plate
 
-<div className="nx-mt-6 nx-rounded-lg nx-border nx-border-amber-500/30 nx-bg-amber-500/5 nx-p-4">
+<Callout type="warning">
 **Status:** the KiCad project and case CAD are not in the repo yet — the PCB and
 case pages are setup/spec guides. A few firmware pin assignments are placeholders
 until the board is finalised (see [Firmware → Setup](/firmware/setup)).
-</div>
+</Callout>
 
 ## Hardware specs
 

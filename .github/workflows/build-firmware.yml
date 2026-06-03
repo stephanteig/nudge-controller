@@ -10,4 +10,7 @@ jobs:
   build:
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
     with:
-      config-path: firmware
+      # ZMK's reusable workflow uses underscore input names; the build matrix
+      # defaults to ./build.yaml at repo root, but ours lives in firmware/.
+      config_path: firmware
+      build_matrix_path: firmware/build.yaml

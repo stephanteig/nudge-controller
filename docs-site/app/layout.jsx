@@ -13,7 +13,6 @@ export const metadata = {
     'Open source DIY Bluetooth editing controller for DaVinci Resolve — a ~$130 alternative to the Blackmagic Speed Editor.',
 }
 
-// Monospace, amber-accented wordmark to match the app + prototype design.
 const logo = (
   <span style={{ fontFamily: 'monospace', fontWeight: 700, letterSpacing: '0.5px' }}>
     NUDGE <span style={{ color: themeConfig.accent }}>CONTROLLER</span>
@@ -21,29 +20,21 @@ const logo = (
 )
 
 const navbar = <Navbar logo={logo} projectLink={themeConfig.github} />
-
 const footer = <Footer>{themeConfig.footerText}</Footer>
 
 export default async function RootLayout({ children }) {
   return (
-    <html
-      lang="en"
-      dir="ltr"
-      suppressHydrationWarning
-      // Dark theme as the default.
-      className="dark"
-    >
+    <html lang="en" dir="ltr" suppressHydrationWarning>
       <Head />
       <body>
         <Layout
           navbar={navbar}
-          footer={footer}
           pageMap={await getPageMap()}
           docsRepositoryBase={themeConfig.docsRepositoryBase}
+          footer={footer}
           editLink="Edit this page on GitHub"
           sidebar={{ defaultMenuCollapseLevel: 1, toggleButton: true }}
-          lastUpdated
-          darkMode
+          nextThemes={{ defaultTheme: 'dark' }}
         >
           {children}
         </Layout>

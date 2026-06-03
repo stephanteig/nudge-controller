@@ -16,8 +16,7 @@ jobs:
           node-version: 20
       - name: Build Nextra docs
         working-directory: docs-site
-        # `npm install` (not `npm ci`) because no package-lock.json is committed.
-        run: npm install && npm run build
+        run: npm ci && npm run build
       - name: Copy prototype to docs output
         run: |
           mkdir -p docs-site/out/controller

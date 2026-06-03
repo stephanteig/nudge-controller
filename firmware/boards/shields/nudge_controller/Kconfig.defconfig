@@ -7,12 +7,8 @@ config ZMK_KEYBOARD_NAME
     # BLE advertises this name (max 16 chars). "Nudge Controller" is exactly 16.
     default "Nudge Controller"
 
-# Pull in the rotary-encoder driver + ZMK's keymap-sensor (encoder) support so a
-# plain `west build` for this shield works without extra flags.
-config EC11
-    default y
-
-config ZMK_ENCODER
-    default y
+# Note: the rotary encoder is enabled by CONFIG_EC11=y in nudge_controller.conf
+# plus the `alps,ec11` + `zmk,keymap-sensors` nodes in the overlay — no extra
+# Kconfig symbol is needed here (the old CONFIG_ZMK_ENCODER no longer exists).
 
 endif # SHIELD_NUDGE_CONTROLLER

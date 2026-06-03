@@ -4,7 +4,8 @@
 if SHIELD_NUDGE_CONTROLLER
 
 config ZMK_KEYBOARD_NAME
-    # BLE advertises this name (max 16 chars). "Nudge Controller" is exactly 16.
+    # Advertised BLE name. 16 chars; the .conf raises CONFIG_BT_DEVICE_NAME_MAX
+    # to 20 so it clears Zephyr's strict name_len < MAX assert.
     default "Nudge Controller"
 
 # Note: the rotary encoder is enabled by CONFIG_EC11=y in nudge_controller.conf

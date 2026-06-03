@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Nudge Controller">
+<meta property="og:title" content="Nudge Controller">
+<meta property="og:description" content="Open source DIY Bluetooth editing controller for DaVinci Resolve — iPad prototype.">
+<title>Nudge Controller — Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ── Reset & base ─────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    width: 100%; height: 100%; overflow: hidden;
+    background: #080808;
+    color: #e8e8ee;
+    font-family: 'DM Mono', monospace;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ── CSS Variables ─────────────────────────────────── */
+  :root {
+    --void:    #080808;
+    --deep:    #0e0e0f;
+    --surface: #141416;
+    --raised:  #1a1a1d;
+    --border:  #242428;
+    --muted:   #44444c;
+    --dim:     #6b6b7a;
+    --mid:     #9999aa;
+    --text:    #e8e8ee;
+    --bright:  #f4f4f8;
+    --amber:   #f5a623;
+    --amber-d: rgba(245,166,35,0.15);
+    --teal:    #4ecdc4;
+    --teal-d:  rgba(78,205,196,0.12);
+    --red:     #ff4757;
+    --red-d:   rgba(255,71,87,0.12);
+    --green:   #2ed573;
+    --blue:    #5352ed;
+  }
+
+  /* ── Layout ────────────────────────────────────────── */
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: env(safe-area-inset-top, 8px) env(safe-area-inset-right, 8px) env(safe-area-inset-bottom, 8px) env(safe-area-inset-left, 8px);
+    gap: 6px;
+  }
+
+  /* ── Top status bar ─────────────────────────────────── */
+  #statusbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+  #statusbar .brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--bright);
+  }
+  #statusbar .brand span { color: var(--amber); }
+  #conn-dot {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+  }
+  #conn-dot::before {
+    content: '';
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--red);
+    transition: background 0.3s;
+  }
+  #conn-dot.connected::before { background: var(--green); box-shadow: 0 0 6px var(--green); }
+  #conn-dot.connected { color: var(--green); }
+  #conn-dot.disconnected { color: var(--red); }
+
+  /* ── Main controller area ──────────────────────────── */
+  #controller {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* ── Key grid panel ─────────────────────────────────── */
+  #keypad {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 10px;
+  }
+
+  .key-row {
+    display: flex;
+    gap: 6px;
+    flex: 1;
+  }
+
+  /* ── Individual key ─────────────────────────────────── */
+  .key {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    background: var(--raised);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.06s, border-color 0.1s;
+    -webkit-touch-callout: none;
+  }
+
+  .key::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 40%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.04), transparent);
+    border-radius: 9px 9px 0 0;
+    pointer-events: none;
+  }
+
+  .key:active,
+  .key.flash {
+    transform: scale(0.93);
+    background: var(--border);
+  }
+
+  .key .key-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--mid);
+    text-align: center;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+  .key .key-shortcut {
+    font-size: 8px;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+  }
+  .key .key-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    margin-bottom: 2px;
+  }
+
+  /* Key variants */
+  .key.transport {
+    background: rgba(78,205,196,0.06);
+    border-color: rgba(78,205,196,0.2);
+  }
+  .key.transport .key-label { color: var(--teal); }
+  .key.transport:active { background: rgba(78,205,196,0.15); border-color: var(--teal); }
+
+  .key.accent {
+    background: rgba(245,166,35,0.07);
+    border-color: rgba(245,166,35,0.25);
+  }
+  .key.accent .key-label { color: var(--amber); }
+  .key.accent:active { background: rgba(245,166,35,0.18); border-color: var(--amber); }
+
+  .key.danger {
+    background: rgba(255,71,87,0.06);
+    border-color: rgba(255,71,87,0.2);
+  }
+  .key.danger .key-label { color: var(--red); }
+  .key.danger:active { background: rgba(255,71,87,0.15); border-color: var(--red); }
+
+  .key.cam {
+    background: rgba(83,82,237,0.06);
+    border-color: rgba(83,82,237,0.2);
+  }
+  .key.cam .key-label { color: #8887f0; }
+  .key.cam:active { background: rgba(83,82,237,0.18); border-color: var(--blue); }
+
+  /* Flash feedback on ACK */
+  @keyframes flash {
+    0%   { opacity: 1; }
+    40%  { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+  .key.ack { animation: flash 0.18s ease-out; }
+
+  /* ── Encoder panel ──────────────────────────────────── */
+  #encoder-panel {
+    width: 200px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 10px;
+    align-items: center;
+  }
+
+  /* Mode tabs */
+  #mode-tabs {
+    display: flex;
+    gap: 4px;
+    width: 100%;
+  }
+  .mode-tab {
+    flex: 1;
+    padding: 6px 0;
+    text-align: center;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--dim);
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .mode-tab.active-scroll { background: rgba(78,205,196,0.15); border-color: var(--teal); color: var(--teal); }
+  .mode-tab.active-jog    { background: rgba(245,166,35,0.15); border-color: var(--amber); color: var(--amber); }
+  .mode-tab.active-shuttle{ background: rgba(255,71,87,0.15);  border-color: var(--red);  color: var(--red); }
+
+  /* Encoder wheel */
+  #encoder-wheel {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    flex-shrink: 0;
+    margin: 4px 0;
+  }
+  #enc-svg { width: 100%; height: 100%; }
+
+  /* Encoder centre display */
+  #enc-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  #enc-mode-text {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--teal);
+    transition: color 0.2s;
+  }
+  #enc-vel {
+    font-size: 8px;
+    color: var(--muted);
+    margin-top: 2px;
+    letter-spacing: 1px;
+  }
+  #enc-last-action {
+    font-size: 7px;
+    color: var(--dim);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+    text-align: center;
+    max-width: 70px;
+    line-height: 1.3;
+  }
+
+  /* Encoder arrow buttons */
+  .enc-arrow {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--raised);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    color: var(--mid);
+    transition: all 0.1s;
+    -webkit-touch-callout: none;
+  }
+  .enc-arrow:active { transform: scale(0.95); }
+  .enc-arrow.up:active   { background: rgba(78,205,196,0.15); border-color: var(--teal); color: var(--teal); }
+  .enc-arrow.down:active { background: rgba(78,205,196,0.15); border-color: var(--teal); color: var(--teal); }
+
+  /* Velocity indicator */
+  #vel-indicator {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+  }
+  .vel-bar {
+    width: 3px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--border);
+    transition: background 0.15s, height 0.15s;
+  }
+
+  /* ── Bottom bar ─────────────────────────────────────── */
+  #bottombar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 12px;
+    background: var(--deep);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    flex-shrink: 0;
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 0.5px;
+  }
+  #last-key {
+    color: var(--amber);
+    font-size: 10px;
+    font-weight: 700;
+    min-width: 160px;
+    letter-spacing: 1px;
+  }
+  #latency { color: var(--dim); font-size: 9px; }
+
+  /* ── Connection overlay ─────────────────────────────── */
+  #overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8,8,8,0.92);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+  #overlay.hidden { display: none; }
+  #overlay h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--bright);
+    letter-spacing: -1px;
+  }
+  #overlay h2 span { color: var(--amber); }
+  #overlay p {
+    color: var(--dim);
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-align: center;
+    max-width: 300px;
+    line-height: 1.7;
+  }
+  #overlay .spinner {
+    width: 32px; height: 32px;
+    border: 2px solid var(--border);
+    border-top-color: var(--amber);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #overlay .status-text {
+    color: var(--amber);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* ── IP setup overlay (GitHub Pages: server IP is entered by the user) ── */
+  #setup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(8,8,8,0.96);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    z-index: 110;
+    backdrop-filter: blur(12px);
+    padding: 24px;
+  }
+  #setup-overlay.hidden { display: none; }
+  #setup-overlay h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 800;
+    color: var(--bright); letter-spacing: -1px;
+  }
+  #setup-overlay h2 span { color: var(--amber); }
+  #setup-overlay p {
+    color: var(--dim); font-size: 12px; letter-spacing: 0.5px;
+    text-align: center; max-width: 320px; line-height: 1.7;
+  }
+  #setup-overlay .help {
+    color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px;
+  }
+  #ip-input {
+    width: 280px; max-width: 80vw;
+    padding: 12px 14px;
+    font-family: 'DM Mono', monospace; font-size: 16px; text-align: center;
+    color: var(--bright); background: var(--surface);
+    border: 1px solid var(--border); border-radius: 10px; outline: none;
+  }
+  #ip-input:focus { border-color: var(--amber); }
+  #ip-save {
+    padding: 11px 28px;
+    font-family: 'DM Mono', monospace; font-weight: 700; font-size: 13px; letter-spacing: 1px;
+    color: #080808; background: var(--amber);
+    border: none; border-radius: 10px; cursor: pointer; text-transform: uppercase;
+  }
+  #ip-save:active { transform: scale(0.97); }
+  #settings-btn {
+    background: transparent; border: 1px solid var(--border); border-radius: 8px;
+    color: var(--dim); font-size: 13px; padding: 4px 9px; cursor: pointer; line-height: 1;
+  }
+  #settings-btn:active { transform: scale(0.95); border-color: var(--amber); color: var(--amber); }
+</style>
+</head>
+<body>
+
+<!-- First-run setup: ask for the Mac's local IP (we're served from GitHub Pages,
+     so we can't infer the server address from location.host). -->
+<div id="setup-overlay" class="hidden">
+  <h2>Nudge <span>Controller</span></h2>
+  <p>Enter your Mac's IP address to connect to the local server.</p>
+  <input id="ip-input" type="text" inputmode="decimal" autocomplete="off"
+         autocapitalize="off" spellcheck="false" placeholder="192.168.1.42">
+  <button id="ip-save">Connect</button>
+  <p class="help">Find it in Terminal: ipconfig getifaddr en0</p>
+</div>
+
+<div id="overlay">
+  <h2>Nudge <span>Controller</span></h2>
+  <div class="spinner"></div>
+  <div class="status-text">Connecting to Mac...</div>
+  <p>Make sure the server is running on your Mac and both devices are on the same WiFi network.</p>
+</div>
+
+<div id="app">
+
+  <!-- Status bar -->
+  <div id="statusbar">
+    <div class="brand">Nudge <span>Controller</span> <span style="font-family:'DM Mono',monospace;font-size:11px;font-weight:400;color:var(--dim);letter-spacing:2px;">PROTOTYPE</span></div>
+    <div id="conn-dot" class="disconnected">Connecting</div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="font-size:10px;color:var(--dim);letter-spacing:1px;" id="profile-label">RESOLVE · CUT PAGE</div>
+      <button id="settings-btn" title="Change server IP" aria-label="Settings">⚙</button>
+    </div>
+  </div>
+
+  <!-- Main controller -->
+  <div id="controller">
+
+    <!-- Key pad -->
+    <div id="keypad">
+      <!-- Row 1: Camera / Source selects -->
+      <div class="key-row" id="row1"></div>
+      <!-- Row 2: Main edit keys -->
+      <div class="key-row" id="row2"></div>
+      <!-- Row 3: Transport + trim -->
+      <div class="key-row" id="row3"></div>
+    </div>
+
+    <!-- Encoder panel -->
+    <div id="encoder-panel">
+
+      <!-- Mode selector -->
+      <div id="mode-tabs">
+        <div class="mode-tab active-scroll" data-mode="SCROLL">SCR</div>
+        <div class="mode-tab" data-mode="JOG">JOG</div>
+        <div class="mode-tab" data-mode="SHUTTLE">SHU</div>
+      </div>
+
+      <!-- Encoder wheel (touch-drag or tap arrows) -->
+      <div id="encoder-wheel">
+        <svg id="enc-svg" viewBox="0 0 150 150">
+          <!-- Outer ring -->
+          <circle cx="75" cy="75" r="70" fill="none" stroke="#1a1a1d" stroke-width="2"/>
+          <!-- Tick marks -->
+          <g id="enc-ticks"></g>
+          <!-- Knob body -->
+          <circle cx="75" cy="75" r="58" fill="url(#knobGrad)"/>
+          <!-- Grip ring -->
+          <g id="enc-grip"></g>
+          <!-- Inner face -->
+          <circle cx="75" cy="75" r="44" fill="#111114" stroke="#222228" stroke-width="1"/>
+          <circle cx="75" cy="75" r="34" fill="#0d0d0e"/>
+          <!-- Position indicator -->
+          <circle id="enc-indicator" cx="75" cy="22" r="3.5" fill="#4ecdc4"/>
+          <defs>
+            <radialGradient id="knobGrad" cx="38%" cy="28%" r="68%">
+              <stop offset="0%" stop-color="#484850"/>
+              <stop offset="55%" stop-color="#2a2a30"/>
+              <stop offset="100%" stop-color="#18181c"/>
+            </radialGradient>
+          </defs>
+        </svg>
+        <div id="enc-center">
+          <div id="enc-mode-text">SCROLL</div>
+          <div id="enc-vel"></div>
+          <div id="enc-last-action"></div>
+        </div>
+      </div>
+
+      <!-- Velocity indicator -->
+      <div id="vel-indicator">
+        <div class="vel-bar" id="vb1"></div>
+        <div class="vel-bar" id="vb2"></div>
+        <div class="vel-bar" id="vb3"></div>
+        <div class="vel-bar" id="vb4"></div>
+        <div class="vel-bar" id="vb5"></div>
+      </div>
+
+      <!-- Arrow buttons (for precise single-frame control) -->
+      <button class="enc-arrow up" id="enc-up">↑ &nbsp;<span id="enc-up-label" style="font-size:8px;color:var(--dim)">Frame Fwd</span></button>
+      <button class="enc-arrow down" id="enc-down">↓ &nbsp;<span id="enc-down-label" style="font-size:8px;color:var(--dim)">Frame Back</span></button>
+
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div id="bottombar">
+    <div id="last-key">— tap a key —</div>
+    <div id="latency">⌀ — ms</div>
+    <div style="font-size:9px;color:var(--muted);letter-spacing:0.5px;">Add to Home Screen for fullscreen</div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  CONFIGURATION
+// ══════════════════════════════════════════════════════
+
+// Key layout: each key definition
+const ROWS = [
+  // Row 1 — camera selects
+  [
+    { id:"cam1",     label:"CAM 1",    shortcut:"Ctrl+1", type:"cam" },
+    { id:"cam2",     label:"CAM 2",    shortcut:"Ctrl+2", type:"cam" },
+    { id:"cam3",     label:"CAM 3",    shortcut:"Ctrl+3", type:"cam" },
+    { id:"cam4",     label:"CAM 4",    shortcut:"Ctrl+4", type:"cam" },
+    { id:"cam5",     label:"CAM 5",    shortcut:"Ctrl+5", type:"cam" },
+    { id:"cam6",     label:"CAM 6",    shortcut:"Ctrl+6", type:"cam" },
+    { id:"cam7",     label:"CAM 7",    shortcut:"Ctrl+7", type:"cam" },
+  ],
+  // Row 2 — edit operations
+  [
+    { id:"mark_in",   label:"MARK IN",   shortcut:"I",       type:"accent" },
+    { id:"mark_out",  label:"MARK OUT",  shortcut:"O",       type:"accent" },
+    { id:"add_edit",  label:"ADD EDIT",  shortcut:"\\",      type:"accent" },
+    { id:"insert",    label:"INSERT",    shortcut:"F9",      type:"" },
+    { id:"overwrite", label:"O-WRITE",   shortcut:"F10",     type:"" },
+    { id:"ripple_del",label:"RIP DEL",   shortcut:"⇧Del",    type:"danger" },
+    { id:"blade",     label:"BLADE",     shortcut:"B",       type:"" },
+  ],
+  // Row 3 — transport + undo
+  [
+    { id:"undo",      label:"UNDO",      shortcut:"⌘Z",      type:"accent" },
+    { id:"redo",      label:"REDO",      shortcut:"⇧⌘Z",     type:"" },
+    { id:"zoom_in",   label:"ZOOM +",    shortcut:"⌘=",      type:"" },
+    { id:"zoom_out",  label:"ZOOM −",    shortcut:"⌘−",      type:"" },
+    { id:"reverse",   label:"◀◀",        shortcut:"J",       type:"transport" },
+    { id:"stop",      label:"■",         shortcut:"K",       type:"transport" },
+    { id:"play",      label:"▶",         shortcut:"L",       type:"transport" },
+  ],
+];
+
+const ENCODER_MODES = ["SCROLL", "JOG", "SHUTTLE"];
+const MODE_COLORS = { SCROLL:"#4ecdc4", JOG:"#f5a623", SHUTTLE:"#ff4757" };
+const MODE_LABELS = {
+  SCROLL: { up:"Frame Fwd", down:"Frame Back" },
+  JOG:    { up:"Trim +1",   down:"Trim −1" },
+  SHUTTLE:{ up:"Speed Up",  down:"Speed Down" },
+};
+
+// ══════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════
+let ws = null;
+let connected = false;
+let encMode = "SCROLL";
+let encAngle = 0;        // visual rotation degrees
+let lastPingTime = 0;
+let latencies = [];
+let pingInterval = null;
+
+// Encoder touch-drag state
+let encDragStartY = null;
+let encDragLastY = null;
+let encDragAccum = 0;
+const ENC_DRAG_THRESHOLD = 8; // px per tick
+
+// ══════════════════════════════════════════════════════
+//  BUILD KEY GRID
+// ══════════════════════════════════════════════════════
+function buildGrid() {
+  ROWS.forEach((row, ri) => {
+    const rowEl = document.getElementById(`row${ri+1}`);
+    row.forEach(k => {
+      const el = document.createElement("div");
+      el.className = `key${k.type ? " "+k.type : ""}`;
+      el.dataset.action = k.id;
+      el.innerHTML = `
+        <div class="key-label">${k.label}</div>
+        <div class="key-shortcut">${k.shortcut}</div>`;
+      rowEl.appendChild(el);
+    });
+  });
+}
+
+// ══════════════════════════════════════════════════════
+//  BUILD ENCODER SVG DETAILS
+// ══════════════════════════════════════════════════════
+function buildEncoderSVG() {
+  const ticksEl = document.getElementById("enc-ticks");
+  const gripEl  = document.getElementById("enc-grip");
+
+  // Tick marks
+  for (let i = 0; i < 24; i++) {
+    const angle = (i / 24) * Math.PI * 2 - Math.PI / 2;
+    const r1 = i % 4 === 0 ? 60 : 63;
+    const r2 = 68;
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", 75 + Math.cos(angle) * r1);
+    line.setAttribute("y1", 75 + Math.sin(angle) * r1);
+    line.setAttribute("x2", 75 + Math.cos(angle) * r2);
+    line.setAttribute("y2", 75 + Math.sin(angle) * r2);
+    line.setAttribute("stroke", i % 4 === 0 ? "#555560" : "#2a2a30");
+    line.setAttribute("stroke-width", i % 4 === 0 ? "1.5" : "0.8");
+    ticksEl.appendChild(line);
+  }
+
+  // Grip lines on knob rim
+  for (let i = 0; i < 36; i++) {
+    const angle = (i / 36) * Math.PI * 2;
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", 75 + Math.cos(angle) * 50);
+    line.setAttribute("y1", 75 + Math.sin(angle) * 50);
+    line.setAttribute("x2", 75 + Math.cos(angle) * 56);
+    line.setAttribute("y2", 75 + Math.sin(angle) * 56);
+    line.setAttribute("stroke", "rgba(255,255,255,0.055)");
+    line.setAttribute("stroke-width", "1.5");
+    gripEl.appendChild(line);
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  ENCODER ROTATION VISUAL
+// ══════════════════════════════════════════════════════
+function rotateEncoder(deg) {
+  encAngle = (encAngle + deg) % 360;
+  const indicator = document.getElementById("enc-indicator");
+  const rad = ((encAngle - 90) * Math.PI) / 180;
+  indicator.setAttribute("cx", 75 + Math.cos(rad) * 53);
+  indicator.setAttribute("cy", 75 + Math.sin(rad) * 53);
+}
+
+// ══════════════════════════════════════════════════════
+//  MODE SWITCHING
+// ══════════════════════════════════════════════════════
+function setMode(mode) {
+  encMode = mode;
+  const col = MODE_COLORS[mode];
+  const labels = MODE_LABELS[mode];
+
+  document.querySelectorAll(".mode-tab").forEach(t => {
+    t.className = "mode-tab";
+    if (t.dataset.mode === mode) {
+      t.classList.add(`active-${mode.toLowerCase()}`);
+    }
+  });
+
+  const modeText = document.getElementById("enc-mode-text");
+  modeText.textContent = mode;
+  modeText.style.color = col;
+
+  document.getElementById("enc-indicator").setAttribute("fill", col);
+  document.getElementById("enc-up-label").textContent = labels.up;
+  document.getElementById("enc-down-label").textContent = labels.down;
+}
+
+// ══════════════════════════════════════════════════════
+//  VELOCITY BARS
+// ══════════════════════════════════════════════════════
+function showVelocity(v) {
+  const col = MODE_COLORS[encMode];
+  const heights = [6, 9, 12, 10, 7];
+  for (let i = 1; i <= 5; i++) {
+    const bar = document.getElementById(`vb${i}`);
+    bar.style.background = i <= v ? col : "var(--border)";
+    bar.style.height = i <= v ? heights[i-1]+"px" : "8px";
+  }
+  setTimeout(() => {
+    for (let i = 1; i <= 5; i++) {
+      const bar = document.getElementById(`vb${i}`);
+      bar.style.background = "var(--border)";
+      bar.style.height = "8px";
+    }
+  }, 300);
+}
+
+// ══════════════════════════════════════════════════════
+//  SERVER IP (persisted in localStorage)
+// ══════════════════════════════════════════════════════
+const IP_KEY = "nudge_server_ip";
+const SERVER_PORT = 3000;
+
+function getServerIp() {
+  return localStorage.getItem(IP_KEY);
+}
+
+function showSetup() {
+  const input = document.getElementById("ip-input");
+  input.value = getServerIp() || "";
+  document.getElementById("setup-overlay").classList.remove("hidden");
+  input.focus();
+}
+
+function hideSetup() {
+  document.getElementById("setup-overlay").classList.add("hidden");
+}
+
+function saveIpAndConnect() {
+  const ip = document.getElementById("ip-input").value.trim();
+  if (!ip) return;
+  localStorage.setItem(IP_KEY, ip);
+  hideSetup();
+  // Tear down any existing socket before reconnecting to the new address.
+  if (ws) { try { ws.onclose = null; ws.close(); } catch (e) {} ws = null; }
+  connect();
+}
+
+// ══════════════════════════════════════════════════════
+//  WEBSOCKET
+// ══════════════════════════════════════════════════════
+function connect() {
+  const ip = getServerIp();
+  if (!ip) { showSetup(); return; }
+
+  document.getElementById("overlay").classList.remove("hidden");
+  document.querySelector("#overlay .status-text").textContent = "Connecting to Mac...";
+
+  const wsUrl = `ws://${ip}:${SERVER_PORT}`;
+  ws = new WebSocket(wsUrl);
+
+  ws.onopen = () => {
+    connected = true;
+    document.getElementById("overlay").classList.add("hidden");
+    const dot = document.getElementById("conn-dot");
+    dot.textContent = "Connected";
+    dot.className = "conn-dot connected";
+
+    // Start pinging for latency
+    pingInterval = setInterval(() => {
+      lastPingTime = Date.now();
+      send({ type:"PING" });
+    }, 2000);
+  };
+
+  ws.onclose = () => {
+    connected = false;
+    document.getElementById("overlay").classList.remove("hidden");
+    document.querySelector("#overlay .status-text").textContent = "Reconnecting...";
+    const dot = document.getElementById("conn-dot");
+    dot.textContent = "Disconnected";
+    dot.className = "conn-dot disconnected";
+    clearInterval(pingInterval);
+    setTimeout(connect, 2000);
+  };
+
+  ws.onerror = () => ws.close();
+
+  ws.onmessage = (e) => {
+    const msg = JSON.parse(e.data);
+    if (msg.type === "PONG") {
+      const lat = Date.now() - lastPingTime;
+      latencies.push(lat);
+      if (latencies.length > 10) latencies.shift();
+      const avg = Math.round(latencies.reduce((a,b)=>a+b,0)/latencies.length);
+      document.getElementById("latency").textContent = `⌀ ${avg}ms`;
+    }
+    if (msg.type === "KEY_ACK") {
+      // Flash key
+      const key = document.querySelector(`[data-action="${msg.action}"]`);
+      if (key) {
+        key.classList.add("ack");
+        setTimeout(() => key.classList.remove("ack"), 200);
+      }
+    }
+    if (msg.type === "ENC_ACK") {
+      document.getElementById("enc-last-action").textContent = msg.action.replace(/_/g," ");
+      showVelocity(msg.velocity || 1);
+    }
+  };
+}
+
+function send(obj) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify(obj));
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  KEY PRESS HANDLING
+// ══════════════════════════════════════════════════════
+function handleKeyPress(action, label) {
+  send({ type:"KEY_PRESS", action });
+  document.getElementById("last-key").textContent = `⌨ ${label}`;
+
+  // Haptic feedback if available
+  if (window.navigator.vibrate) window.navigator.vibrate(8);
+}
+
+// ══════════════════════════════════════════════════════
+//  ENCODER TICK
+// ══════════════════════════════════════════════════════
+function encoderTick(direction, velocity = 1) {
+  send({ type:"ENCODER_TICK", direction, mode: encMode, velocity });
+  rotateEncoder(direction === "cw" ? 15 : -15);
+  if (window.navigator.vibrate) window.navigator.vibrate(4);
+}
+
+// ══════════════════════════════════════════════════════
+//  EVENT LISTENERS
+// ══════════════════════════════════════════════════════
+function attachListeners() {
+  // Key presses — use touchstart for zero latency on iPad
+  document.getElementById("keypad").addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    const key = e.target.closest(".key");
+    if (!key) return;
+    const action = key.dataset.action;
+    const label = key.querySelector(".key-label").textContent;
+    key.classList.add("flash");
+    setTimeout(() => key.classList.remove("flash"), 120);
+    handleKeyPress(action, label);
+  }, { passive: false });
+
+  // Mode tabs
+  document.querySelectorAll(".mode-tab").forEach(tab => {
+    tab.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      setMode(tab.dataset.mode);
+    }, { passive: false });
+  });
+
+  // Encoder arrow buttons
+  document.getElementById("enc-up").addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    encoderTick("cw", 1);
+  }, { passive: false });
+  document.getElementById("enc-down").addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    encoderTick("ccw", 1);
+  }, { passive: false });
+
+  // Encoder wheel — touch-drag for continuous spin
+  const wheel = document.getElementById("encoder-wheel");
+
+  wheel.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    encDragStartY = e.touches[0].clientY;
+    encDragLastY  = encDragStartY;
+    encDragAccum  = 0;
+  }, { passive: false });
+
+  wheel.addEventListener("touchmove", (e) => {
+    e.preventDefault();
+    const y = e.touches[0].clientY;
+    const dy = encDragLastY - y; // positive = dragging up = CW
+    encDragLastY = y;
+    encDragAccum += dy;
+
+    while (Math.abs(encDragAccum) >= ENC_DRAG_THRESHOLD) {
+      const dir = encDragAccum > 0 ? "cw" : "ccw";
+      // Velocity based on drag speed
+      const totalDelta = Math.abs(encDragStartY - y);
+      const velocity = Math.min(Math.max(1, Math.floor(totalDelta / 40)), 5);
+      encoderTick(dir, velocity);
+      encDragAccum -= Math.sign(encDragAccum) * ENC_DRAG_THRESHOLD;
+    }
+  }, { passive: false });
+
+  wheel.addEventListener("touchend", (e) => {
+    e.preventDefault();
+    encDragStartY = null;
+    encDragLastY  = null;
+    encDragAccum  = 0;
+  }, { passive: false });
+}
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
+buildGrid();
+buildEncoderSVG();
+setMode("SCROLL");
+attachListeners();
+
+// IP setup wiring
+document.getElementById("settings-btn").addEventListener("click", showSetup);
+document.getElementById("ip-save").addEventListener("click", saveIpAndConnect);
+document.getElementById("ip-input").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") saveIpAndConnect();
+});
+
+// On load: connect if we already know the IP, otherwise show the setup screen.
+if (getServerIp()) connect();
+else showSetup();
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+# ZMK shield metadata — lets the GitHub Actions build (and ZMK Studio) discover
+# the Nudge Controller shield and know what hardware features it exposes.
+file_format: "1"
+id: nudge_controller
+name: Nudge Controller
+type: shield
+url: https://github.com/stephanteig/nudge-controller
+requires:
+  - pro_micro          # any Pro Micro–footprint board; we target nice!nano v2
+features:
+  - keys
+  - encoder

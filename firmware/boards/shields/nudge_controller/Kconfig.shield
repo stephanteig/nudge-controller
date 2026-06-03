@@ -1,0 +1,4 @@
+# Defines the SHIELD_NUDGE_CONTROLLER symbol, switched on automatically when the
+# build is invoked with `-DSHIELD=nudge_controller` (or via build.yaml).
+config SHIELD_NUDGE_CONTROLLER
+    def_bool $(shields_list_contains,nudge_controller)

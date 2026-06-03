@@ -1,7 +1,7 @@
 {
-  "name": "dialedit-prototype-server",
+  "name": "nudge-controller-prototype-server",
   "version": "1.0.0",
-  "description": "DialEdit iPad prototype server — injects keystrokes into macOS from iPad WebSocket",
+  "description": "Nudge Controller iPad prototype server — injects keystrokes into macOS from iPad WebSocket",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

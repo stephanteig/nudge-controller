@@ -1,0 +1,17 @@
+/* Tailwind layers — utility classes are generated at build time from the
+   class names used across the JSX components. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* App-wide defaults */
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: #0e0e0f;
+}

@@ -1,5 +1,5 @@
 /**
- * DialEdit Prototype Server
+ * Nudge Controller Prototype Server
  * Run on your Mac: node server.js
  * Then open http://YOUR_MAC_IP:3000 on your iPad
  *
@@ -174,7 +174,7 @@ server.listen(PORT, "0.0.0.0", () => {
   }
 
   console.log("\n╔══════════════════════════════════════════════╗");
-  console.log("║         DialEdit Prototype Server            ║");
+  console.log("║      Nudge Controller Prototype Server       ║");
   console.log("╚══════════════════════════════════════════════╝\n");
   console.log("🖥   Server running. Open on your iPad:\n");
   ips.forEach(ip => console.log(`     http://${ip}:${PORT}`));

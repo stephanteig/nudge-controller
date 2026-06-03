@@ -1,4 +1,4 @@
-# DialEdit Prototype — Setup Guide
+# Nudge Controller Prototype — Setup Guide
 
 ## What this is
 A virtual controller running on your iPad that sends real keystrokes
@@ -20,7 +20,7 @@ Resolve before building the physical hardware.
 Open Terminal on your Mac, navigate to this folder, and run:
 
 ```bash
-cd dialedit-prototype
+cd prototype
 npm install
 ```
 
@@ -54,7 +54,7 @@ You'll see output like:
 ✅  robotjs loaded — keystrokes will fire into your Mac
 
 ╔══════════════════════════════════════════════╗
-║         DialEdit Prototype Server            ║
+║      Nudge Controller Prototype Server       ║
 ╚══════════════════════════════════════════════╝
 
 🖥   Server running. Open on your iPad:

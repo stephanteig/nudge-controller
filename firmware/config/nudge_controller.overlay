@@ -1,0 +1,123 @@
+/*
+ * ─────────────────────────────────────────────────────────────────────────────
+ *  Nudge Controller — hardware definition (devicetree overlay)
+ *  Board: nice!nano v2 (nRF52840) · Pro Micro–compatible pinout
+ *
+ *  NOTE ON FILE LOCATION:
+ *  For a standalone ZMK shield this devicetree normally lives at
+ *      boards/shields/nudge_controller/nudge_controller.overlay
+ *  We keep it here under config/ to match the project layout; ZMK applies a
+ *  config/<shield>.overlay during the build. If you split this into its own
+ *  shield module later, move this file (and copy it) into boards/shields/.
+ *
+ *  PIN MAPPING — READ ME:
+ *  `&pro_micro N` refers to Pro Micro silkscreen pin N as exposed by the
+ *  nice!nano. The matrix pins below map cleanly (D4..D16 -> &pro_micro 4..16).
+ *  The encoder uses the AVR-style labels from the schematic (A=F4, B=F5,
+ *  SW=F6). On the 32u4 those are PORTF analog pins; on the nice!nano they sit
+ *  at different Pro Micro positions, so the encoder &pro_micro indices below
+ *  are best-guess placeholders — VERIFY against the nice!nano v2 pinout and
+ *  your PCB before flashing. Search this file for "TODO" for every spot.
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,matrix-transform = &default_transform;
+    };
+
+    /*
+     * The 21 keys form a 3-row × 7-column matrix. The encoder push-switch is a
+     * single extra GPIO, so we stitch the matrix and a 1-key direct kscan
+     * together with a composite kscan. The encoder switch becomes the 22nd key
+     * (matrix-transform position RC(3,0)).
+     */
+    kscan0: kscan_composite {
+        compatible = "zmk,kscan-composite";
+        rows = <4>;       /* 3 real matrix rows + 1 virtual row for the encoder switch */
+        columns = <7>;
+
+        /* The 3×7 key matrix occupies rows 0–2 */
+        matrix {
+            kscan = <&matrix_kscan>;
+        };
+
+        /* The encoder push-switch occupies the virtual row 3, column 0 */
+        encoder_switch {
+            kscan = <&encoder_kscan>;
+            row-offset = <3>;
+        };
+    };
+
+    /* ── Key matrix (Alps/Cherry-style switches) ────────────────────────────── */
+    matrix_kscan: matrix_kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        diode-direction = "col2row";   /* diodes point column → row */
+        wakeup-source;                 /* a keypress wakes the board from deep sleep */
+
+        /* Rows are the SENSING side (inputs, pulled low) */
+        row-gpios
+            = <&pro_micro  4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>   /* D4 — row 0 */
+            , <&pro_micro  5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>   /* D5 — row 1 */
+            , <&pro_micro 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>   /* TODO: 3rd row pin.
+                 The build spec lists only D4 + D5, but 21 keys need 3 rows × 7 cols.
+                 D15 is a placeholder — set this to the real 3rd row pin on your PCB. */
+            ;
+
+        /* Columns are the DRIVING side (outputs) */
+        col-gpios
+            = <&pro_micro  6 GPIO_ACTIVE_HIGH>   /* D6  — col 0 */
+            , <&pro_micro  7 GPIO_ACTIVE_HIGH>   /* D7  — col 1 */
+            , <&pro_micro  8 GPIO_ACTIVE_HIGH>   /* D8  — col 2 */
+            , <&pro_micro  9 GPIO_ACTIVE_HIGH>   /* D9  — col 3 */
+            , <&pro_micro 10 GPIO_ACTIVE_HIGH>   /* D10 — col 4 */
+            , <&pro_micro 16 GPIO_ACTIVE_HIGH>   /* D16 — col 5 */
+            , <&pro_micro 14 GPIO_ACTIVE_HIGH>   /* D14 — col 6 */
+            ;
+    };
+
+    /* ── Encoder push-switch (the SW leg of the EC11K) ──────────────────────── */
+    encoder_kscan: encoder_kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        wakeup-source;
+        input-gpios
+            = <&pro_micro 20 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>   /* SW = F6 — TODO verify pin */
+            ;
+    };
+
+    /* ── Logical key layout ─────────────────────────────────────────────────── */
+    default_transform: keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <7>;
+        rows = <4>;
+        /* 21 matrix keys, then the encoder switch at RC(3,0) */
+        map = <
+            RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4) RC(0,5) RC(0,6)
+            RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4) RC(1,5) RC(1,6)
+            RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5) RC(2,6)
+            RC(3,0)
+        >;
+    };
+
+    /* ── Rotary encoder (Alps EC11K, 24 detents/pulses per revolution) ──────── */
+    encoder: encoder {
+        compatible = "alps,ec11";
+        a-gpios = <&pro_micro 19 (GPIO_ACTIVE_HIGH)>;   /* A = F4 — TODO verify pin */
+        b-gpios = <&pro_micro 18 (GPIO_ACTIVE_HIGH)>;   /* B = F5 — TODO verify pin */
+        steps = <24>;                                   /* 24 pulses per rotation (EC11K) */
+        status = "okay";
+        /* A and B carry external 10kΩ pull-ups on the PCB, so no internal pull
+           is requested here. If you wire the encoder without those resistors,
+           add GPIO_PULL_UP to both a-gpios and b-gpios. */
+    };
+
+    /* Tell ZMK this encoder is a keymap sensor (its rotation drives the keymap) */
+    sensors: sensors {
+        compatible = "zmk,keymap-sensors";
+        sensors = <&encoder>;
+        triggers-per-rotation = <24>;
+    };
+};

@@ -11,3 +11,6 @@ export default withNextra({
   basePath: '/nudge-controller',
   images: { unoptimized: true },
 })
+// Note: `trailingSlash: true` breaks Nextra 4's optional catch-all export
+// ("Cannot find module './undefined'"), so routes are served at their no-slash
+// path (e.g. /firmware/flashing). Nextra's own links use that form.

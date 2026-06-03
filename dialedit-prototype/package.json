@@ -1,0 +1,17 @@
+{
+  "name": "dialedit-prototype-server",
+  "version": "1.0.0",
+  "description": "DialEdit iPad prototype server — injects keystrokes into macOS from iPad WebSocket",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "robotjs": "^0.6.0",
+    "ws": "^8.14.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

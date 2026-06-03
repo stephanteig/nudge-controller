@@ -24,6 +24,15 @@
 > Note: `docs/*.md` are the original guides; their content has been ported into `docs-site/content/**`.
 > When editing docs, prefer `docs-site/content/` (that's what ships to the live site).
 
+## Resuming on another machine
+1. `git clone https://github.com/stephanteig/nudge-controller.git` (everything is on `main`).
+2. `node_modules/` and build output (`out/`, `dist/`, `dist-electron/`) are gitignored — reinstall per subproject:
+   - Docs: `cd docs-site && npm ci` (lockfile committed; pins `zod` 4.1.12 — see Docs build note).
+   - App: `cd app && npm install` (no lockfile committed yet).
+   - Prototype: `cd prototype && npm install` (robotjs needs macOS + Accessibility permission).
+3. Firmware needs nothing locally — it builds in GitHub Actions (push to `firmware/**`).
+4. CI is green and Pages is live (see TODOs). Tooling: `gh` CLI is used for Actions/Pages.
+
 ## Hardware specs (source of truth for all firmware and PCB work)
 - **MCU:** nice!nano v2 (nRF52840), Pro Micro pinout, ZMK firmware
   - ZMK build-target board id (post Zephyr-4.1 / hardware-model-v2): **`nice_nano@2.0.0//zmk`** (the old `nice_nano_v2` no longer exists)
@@ -69,7 +78,7 @@ Every time a meaningful change is made to this repo:
 - [x] Add `.github/workflows/build-firmware.yml` for ZMK GitHub Actions build
 - [x] Add `firmware/build.yaml` ZMK build matrix
 - [x] **ZMK firmware build is green** — Actions produces the `firmware` artifact (the `.uf2`). Verified on `nice_nano@2.0.0//zmk`.
-- [ ] Configure GitHub Pages to deploy from the `gh-pages` branch (repo Settings → Pages) — required before the docs/prototype URLs go live
+- [x] GitHub Pages enabled (source: `gh-pages` branch, root). Site is **live**: docs at https://stephanteig.github.io/nudge-controller/ , prototype at https://stephanteig.github.io/nudge-controller/controller/ . (Routes serve at their no-slash path; `trailingSlash: true` is intentionally off — it breaks Nextra 4's catch-all export.)
 - [x] Verify `docs-site` builds locally — `npm ci && npm run build` produces `out/` with all 19 pages
 - [x] Commit `docs-site/package-lock.json`; CI uses `npm ci`
 

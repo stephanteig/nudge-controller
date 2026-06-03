@@ -64,8 +64,8 @@ Pair the controller with several hosts and switch instantly:
 3. To pair a new host: select an unused profile, then pair from that host's
    Bluetooth menu.
 
-This is configured by `CONFIG_BT_MAX_PAIRED=5` /`CONFIG_BT_MAX_CONN=5` in
-[`nudge_controller.conf`](../firmware/nudge_controller.conf).
+ZMK provides 5 switchable profiles by default — no extra config is needed (see
+[`nudge_controller.conf`](../firmware/nudge_controller.conf)).
 
 ## 5. Encoder modes
 

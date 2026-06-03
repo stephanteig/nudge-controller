@@ -1,0 +1,34 @@
+---
+title: Firmware
+---
+
+# Firmware
+
+The controller runs [ZMK](https://zmk.dev) — open-source, Bluetooth-first
+keyboard firmware — on a **nice!nano v2** (nRF52840). ZMK gives us BLE 5.0,
+multi-device profiles, deep-sleep power management, and rotary-encoder support
+with no custom C: just devicetree + keymap config.
+
+## What's in `firmware/`
+
+```
+firmware/
+├── config/
+│   ├── nudge_controller.keymap   # bindings + the 4 layers
+│   ├── nudge_controller.conf     # BLE, deep sleep, encoder, battery
+│   └── nudge_controller.overlay  # matrix, encoder, pin assignments
+├── boards/shields/nudge_controller/
+│   ├── nudge_controller.zmk.yml  # shield metadata
+│   ├── Kconfig.shield
+│   └── Kconfig.defconfig
+└── build.yaml                    # ZMK build matrix (nice_nano_v2 + shield)
+```
+
+## Sections
+
+- [Setup](/firmware/setup) — config repo, hardware pins, the `TODO`s to verify
+- [Layers & Keymap](/firmware/layers) — the 4 layers and what each key does
+- [Flashing](/firmware/flashing) — build the `.uf2`, flash, pair, switch profiles
+
+> **Why ZMK, not QMK?** ZMK is Bluetooth-first and built for the nRF52840 — it
+> handles BLE, multi-profile pairing, and deep sleep natively.

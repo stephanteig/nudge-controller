@@ -1,0 +1,50 @@
+---
+title: Quick Start
+---
+
+import { Steps } from 'nextra/components'
+
+# Quick Start
+
+## Path A — Test the layout on an iPad
+
+<Steps>
+### Start the server on your Mac
+```bash
+cd prototype
+npm install
+npm start
+```
+### Find your Mac's IP
+```bash
+ipconfig getifaddr en0
+```
+### Open the controller on your iPad
+Go to **https://stephanteig.github.io/nudge-controller/controller**, enter the IP
+when prompted, and tap **Connect**. Give DaVinci Resolve focus and try the keys.
+</Steps>
+
+See [Prototype → Setup](/prototype/setup) for details.
+
+## Path B — Build the hardware
+
+<Steps>
+### Order the parts
+Use the [Bill of Materials](/hardware/bom) (~$130 all-in).
+### Assemble
+Follow the [PCB](/hardware/pcb) and [Case](/hardware/case) guides.
+### Flash + pair
+See Path C.
+</Steps>
+
+## Path C — Flash the firmware
+
+<Steps>
+### Build
+Push the `firmware/` config to a ZMK config repo; GitHub Actions produces a
+`.uf2`. See [Firmware → Flashing](/firmware/flashing).
+### Flash
+Double-tap reset on the nice!nano and drag the `.uf2` onto the `NICENANO` drive.
+### Pair
+Pair **"Nudge Controller"** over Bluetooth and start editing.
+</Steps>

@@ -1,0 +1,34 @@
+---
+title: Prototype
+---
+
+# Prototype
+
+A virtual controller that runs on your iPad and sends **real keystrokes** into
+your Mac over Wi-Fi. Use it to test your key layout in DaVinci Resolve before you
+build (or even buy parts for) the physical hardware.
+
+## How it works
+
+```
+iPad (browser)  ──WebSocket──►  Mac (Node server)  ──robotjs──►  DaVinci Resolve
+   GitHub Pages                   localhost:3000                  keystrokes
+```
+
+- The **UI** is a single static HTML page, published on GitHub Pages.
+- The **server** runs locally on your Mac and injects keystrokes via `robotjs`.
+- Because the page is served from GitHub Pages (not your Mac), it asks for your
+  Mac's **local IP** on first load and remembers it.
+
+## Open it now
+
+**https://stephanteig.github.io/nudge-controller/controller**
+
+Then follow [Setup](/prototype/setup) to start the server and connect.
+
+## What's on screen
+
+- A **3×7 key grid** (camera selects, edit ops, transport).
+- A **jog/shuttle encoder** with three modes — **Scroll / Jog / Shuttle** —
+  drag to spin, or tap the arrows for single steps.
+- A **⚙ settings** button to change the server IP at any time.

@@ -1,0 +1,25 @@
+---
+title: Configurator App
+---
+
+# Configurator App
+
+An Electron + React desktop tool for designing key layouts, importing DaVinci
+Resolve shortcuts, managing profiles, generating ZMK keymaps, and (eventually)
+pushing them to the controller over Bluetooth.
+
+## Tabs
+
+- **Dashboard** — connect over Bluetooth, see battery/profile, push a keymap.
+- **[Layout Editor](/app/layout-editor)** — drag-and-drop the 3×7 grid + encoder modes.
+- **Profiles** — save / load / delete profiles; import a Resolve `.txt` export.
+- **[AI Assist](/app/ai-assist)** — Claude proposes a layout from a description.
+
+## Under the hood
+
+- `resolveParser.js` — parses a Resolve shortcut export into `{ action: combo }`.
+- `zmkGenerator.js` — turns a layout object into a valid ZMK `.keymap` string.
+- `main.js` / `preload.js` — Electron main process + a secure `window.nudge` IPC
+  bridge (file dialogs, profile storage, Web Bluetooth picker).
+
+Start with [Setup](/app/setup).

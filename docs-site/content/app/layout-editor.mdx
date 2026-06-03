@@ -1,0 +1,37 @@
+---
+title: Layout Editor
+---
+
+# Layout Editor
+
+The visual editor for the 21-key grid (3 rows × 7 columns) and the three encoder
+modes.
+
+## Editing keys
+
+- **Drag** an action from the palette onto a key to assign it.
+- **Drag** one key onto another to swap them.
+- **Click** a key to edit its label, action, and key combo inline.
+
+Combos use plain notation that the generator understands:
+
+| You type | Becomes (ZMK) |
+|---|---|
+| `Cmd+Shift+Z` | `LG(LS(Z))` |
+| `Ctrl+1` | `LC(N1)` |
+| `Shift+Right` | `LS(RIGHT)` |
+| `]` | `RBKT` |
+| `F9` | `F9` |
+
+## Encoder modes
+
+Set the **clockwise** and **counter-clockwise** combo for each of **Scroll**,
+**Jog**, and **Shuttle**. These become the `sensor-bindings` on each firmware
+layer.
+
+## Generating a keymap
+
+The editor feeds a layout object to `zmkGenerator.generateKeymap()`, producing a
+ready-to-build `nudge_controller.keymap` — the same structure as the hand-written
+firmware (Scroll/Jog/Shuttle + Bluetooth layer, with the tap-cycle/hold-for-BT
+encoder button). See [Firmware → Layers](/firmware/layers).

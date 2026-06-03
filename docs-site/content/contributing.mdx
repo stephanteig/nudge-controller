@@ -1,0 +1,52 @@
+---
+title: Contributing
+---
+
+# Contributing
+
+Contributions are welcome — hardware, firmware, app, or docs. This page mirrors
+the repo's [`CONTRIBUTING.md`](https://github.com/stephanteig/nudge-controller/blob/main/CONTRIBUTING.md).
+
+## Run the prototype locally
+
+```bash
+cd prototype && npm install && npm start
+```
+
+Open the [controller page](/prototype) on a tablet and enter your Mac's IP.
+
+## Edit & build the docs site
+
+```bash
+cd docs-site && npm install && npm run dev   # http://localhost:3000
+npm run build                                # static export to out/
+```
+
+Docs content lives in `docs-site/content/**` as `.mdx`. Sidebar order is set by
+`_meta.js` files.
+
+## Build the Electron app
+
+```bash
+cd app && npm install && npm run dev
+```
+
+## Commit message format
+
+`type(scope): description`
+
+- `feat(firmware): add BT layer`
+- `fix(prototype): configurable WS IP`
+- `docs: update BOM`
+
+Common types: `feat`, `fix`, `docs`, `chore`, `refactor`.
+
+## Reporting issues
+
+- **Hardware** (pins, soldering, PCB, case): include your board revision, a clear
+  photo, and what you measured.
+- **Software** (firmware/app/prototype/docs): include OS, Node version, repro
+  steps, and any console/build output.
+
+After any meaningful change, update `CLAUDE.md`, `README.md`, and the relevant
+`docs-site/content/` page (see the update rules in `CLAUDE.md`).

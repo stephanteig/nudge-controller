@@ -1,0 +1,60 @@
+---
+title: App Setup
+---
+
+import { Steps, Callout } from 'nextra/components'
+
+# App Setup
+
+<Steps>
+### Install
+
+```bash
+cd app
+npm install
+```
+
+Requires **Node.js 18+**. Dependencies (Electron, React, Vite, Tailwind) are not
+committed.
+
+### Run
+
+```bash
+npm run dev
+```
+
+Vite serves the React UI and launches Electron pointed at it.
+
+### Build
+
+```bash
+npm run build   # renderer → dist/, Electron main/preload → dist-electron/
+```
+</Steps>
+
+<Callout type="info">
+Packaging into a distributable installer (electron-builder) is a planned
+follow-up.
+</Callout>
+
+## Import your Resolve shortcuts
+
+1. In DaVinci Resolve: **Keyboard Customization** → export your set as text.
+2. In the app: **Profiles → Import Resolve .txt** and pick the file.
+3. The parser reads lines like `Mark In    I` and fills any key whose action
+   name matches (case-insensitive).
+
+## Save & manage profiles
+
+**Profiles** stores the current layout as JSON under your OS user-data folder.
+Build one profile per app/workflow (Resolve Cut, Resolve Edit, Premiere, …).
+
+## Push to the controller
+
+In **Dashboard**: **Connect via Bluetooth**, then **Push keymap (OTA)**.
+
+<Callout type="warning">
+OTA is **scaffolded but not finished** — the ZMK GATT UUIDs in `Dashboard.jsx`
+are placeholders. Until wired up, copy the generated keymap into
+`firmware/config/nudge_controller.keymap` and [reflash](/firmware/flashing).
+</Callout>

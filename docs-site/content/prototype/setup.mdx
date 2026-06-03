@@ -1,0 +1,62 @@
+---
+title: Prototype Setup
+---
+
+import { Steps, Callout } from 'nextra/components'
+
+# Prototype Setup
+
+<Steps>
+### Install dependencies
+
+```bash
+cd prototype
+npm install
+```
+
+<Callout type="info">
+`robotjs` needs Xcode Command Line Tools on macOS. If install fails, run
+`xcode-select --install` and try again.
+</Callout>
+
+### Grant Accessibility access
+
+`robotjs` needs permission to inject keystrokes:
+
+1. **System Settings → Privacy & Security → Accessibility**
+2. Click **+** and add **Terminal** (or iTerm2)
+3. Toggle it **on**
+
+Without this the server runs in **log-only** mode (no real keystrokes fire).
+
+### Start the server
+
+```bash
+npm start
+```
+
+It prints your Mac's IP and listens on port **3000**.
+
+### Connect from the iPad
+
+Open **https://stephanteig.github.io/nudge-controller/controller**. On first load
+it asks for your Mac's IP address:
+
+```bash
+# find it on the Mac:
+ipconfig getifaddr en0
+```
+
+Enter the IP, tap **Connect**. The IP is saved to `localStorage`; change it later
+via the **⚙** button.
+
+### Use it
+
+Click into DaVinci Resolve so it has keyboard focus, then tap keys / spin the
+encoder on the iPad.
+</Steps>
+
+<Callout type="warning">
+Both devices must be on the **same Wi-Fi** (not a guest network). If the iPad
+can't connect, check your Mac's firewall allows port 3000.
+</Callout>

@@ -1,0 +1,43 @@
+---
+title: Customising the Prototype
+---
+
+# Customising
+
+The prototype's behaviour lives in two files.
+
+## Change what a key does
+
+Edit `prototype/server.js` → the `KEY_MAP` object. Each action maps to a
+keystroke fired by `robotjs`:
+
+```js
+const KEY_MAP = {
+  mark_in:   { key: "i" },
+  cut_clip:  { key: "x", modifiers: ["command"] },
+  redo:      { key: "z", modifiers: ["command", "shift"] },
+  // ...
+};
+```
+
+`modifiers` accepts `"command"`, `"shift"`, `"control"`, `"alt"`.
+
+## Rename / reorder the on-screen keys
+
+Edit `prototype/public/index.html` → the `ROWS` array. Each entry defines a
+button's `id` (must match a `KEY_MAP` action), `label`, `shortcut` text, and an
+optional `type` for colour (`cam`, `accent`, `danger`, `transport`).
+
+```js
+{ id: "mark_in", label: "MARK IN", shortcut: "I", type: "accent" }
+```
+
+## Encoder modes
+
+The encoder sends `ENCODER_TICK` messages with a `mode` (`SCROLL` / `JOG` /
+`SHUTTLE`) and direction; the server maps those to `enc_<mode>_<dir>` entries in
+`KEY_MAP`. Edit those to change scrub/trim/shuttle behaviour.
+
+Restart the server (`Ctrl+C`, then `npm start`) for changes to take effect. The
+same action vocabulary is shared by the [firmware](/firmware/layers) and the
+[configurator app](/app), so a layout you like here carries over.

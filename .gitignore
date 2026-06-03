@@ -141,3 +141,40 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+# macOS
+.DS_Store
+.AppleDouble
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# KiCad
+*-backups/
+*.bak
+*.kicad_prl
+fp-info-cache
+~*.lck
+*.net
+gerbers/
+*.gbr
+*.drl
+*.gbrjob
+
+# ZMK build artifacts
+build/
+.west/
+zephyr/
+zmk/
+*.uf2
+
+# Electron build output
+dist-electron/
+release/
+*.app
+*.dmg
+*.exe

@@ -1,0 +1,29 @@
+name: Deploy Docs + Prototype
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Build Nextra docs
+        working-directory: docs-site
+        # `npm install` (not `npm ci`) because no package-lock.json is committed.
+        run: npm install && npm run build
+      - name: Copy prototype to docs output
+        run: |
+          mkdir -p docs-site/out/controller
+          cp prototype/public/index.html docs-site/out/controller/index.html
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs-site/out

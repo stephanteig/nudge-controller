@@ -1,0 +1,59 @@
+---
+title: PCB
+---
+
+import { Callout } from 'nextra/components'
+
+# PCB
+
+KiCad design + assembly for the Nudge Controller main board.
+
+<Callout type="warning">
+**Pin assignments are not final.** The 3rd matrix row (`D15` / P1.13) and the
+encoder pins (P0.31 / P0.29 / P0.02) are placeholders until verified against a
+physical nice!nano v2 and the KiCad netlist. The PCB and the firmware
+[overlay](/firmware/setup) must agree before either is trusted.
+</Callout>
+
+## Tools
+
+- [KiCad 7+](https://www.kicad.org/) (free, open source)
+- The [nice!nano footprint/symbol](https://nicekeyboards.com/docs/nice-nano/)
+  (Pro Micro–compatible) added as a library
+
+## Schematic outline
+
+1. **nice!nano socket** — Pro Micro pinout. Break out the matrix + encoder GPIO,
+   plus `3V3`, `GND`, `B+`/`B-`.
+2. **Key matrix** — 3 rows × 7 cols = 21 switches, one **1N4148** per key,
+   cathode toward the row (`col2row`).
+   - Rows: `D4` (P0.28), `D5` (P0.30), `D15` (P1.13)
+   - Cols: `D6` (P1.11), `D7` (P0.06), `D8` (P0.08), `D9` (P0.17), `D10` (P0.20), `D16` (P0.10), `D14` (P1.12)
+3. **Encoder** — Alps EC11K: A (P0.31), B (P0.29), C → GND, SW (P0.02). Add
+   **10 kΩ pull-ups** A→3V3 and B→3V3.
+4. **Power** — JST-PH 2.0 mm to `B+`/`B-`, with a slide switch inline on `B+`.
+
+## Layout tips
+
+- Keep encoder A/B traces short and away from the nice!nano antenna corner.
+- Leave the antenna corner free of copper pour.
+- Reserve a battery-pocket keep-out (cell not under pins).
+- Add mounting holes aligned with the case + switch plate.
+
+## Assembly order
+
+1. **Diodes (21×)** — orientation matters; cathode (black band) toward the row.
+   A reversed diode makes a whole row/column misbehave.
+2. **Encoder + pull-ups** — solder the EC11K, then the two 10 kΩ resistors on A/B.
+3. **Switches + plate** — drop switches through the [plate](/hardware/case) first,
+   seat onto the PCB, then solder so everything stays square.
+4. **nice!nano** — sockets recommended (reusable); mind the USB-C orientation.
+
+## Exporting Gerbers (JLCPCB / PCBWay)
+
+1. **File → Plot**, format **Gerber**. Layers: `F.Cu`, `B.Cu`, `F.Mask`,
+   `B.Mask`, `F.SilkS`, `B.SilkS`, `Edge.Cuts`.
+2. **Generate Drill Files** (Excellon, PTH+NPTH).
+3. Zip the output folder and upload; 1.6 mm FR4, HASL or ENIG, batch of 5.
+
+Continue to [Case & Plate](/hardware/case).

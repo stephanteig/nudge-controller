@@ -1,0 +1,50 @@
+---
+title: Flashing
+---
+
+import { Steps } from 'nextra/components'
+
+# Flashing
+
+<Steps>
+### Build
+
+Push to GitHub. The **Build ZMK Firmware** workflow runs; download the
+**firmware** artifact — it contains `nudge_controller nice_nano_v2.uf2`.
+
+### Flash
+
+1. Connect the nice!nano via USB-C.
+2. **Double-tap the reset button** — a drive named `NICENANO` appears.
+3. Drag the `.uf2` onto that drive.
+4. The board reboots and the drive disappears — done.
+
+### Pair
+
+Power on, open your host's Bluetooth settings, and pair **"Nudge Controller"**.
+It connects to **profile 0** by default.
+</Steps>
+
+## Multi-device profiles (up to 5)
+
+1. **Hold the encoder push** to enter the Bluetooth layer.
+2. **Top row** selects profiles **0–4** (`BT_SEL`); the 6th key **clears** the
+   current pairing (`BT_CLR`).
+3. To add a host: select an unused profile, then pair from that host.
+
+## Troubleshooting
+
+| Symptom | Try |
+|---|---|
+| `NICENANO` drive doesn't appear | Double-tap reset faster; use a USB **data** cable |
+| Build fails in Actions | Check `build.yaml` board/shield names match exactly |
+| A whole row/column is dead | Reversed or cold-soldered diode; check matrix wiring |
+| Encoder skips/jumps | Verify A/B pins + 10 kΩ pull-ups; confirm `steps = <24>` |
+| Won't pair / wrong device | Enter BT layer, `BT_CLR`, then re-pair |
+| Pins seem wrong | Resolve the `TODO` pins in the overlay against your PCB |
+
+## Over-the-air updates
+
+The [configurator app](/app) is designed to push keymaps over Bluetooth, but the
+GATT write is not finished yet (placeholder UUIDs). Until then, regenerate the
+keymap, drop it into `config/nudge_controller.keymap`, and reflash.

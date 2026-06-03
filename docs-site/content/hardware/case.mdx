@@ -1,0 +1,64 @@
+---
+title: Case & Plate
+---
+
+import { Callout } from 'nextra/components'
+
+# Case & Plate
+
+A 3D-printed two-part shell plus a laser-cut switch plate.
+
+<Callout type="error">
+**LiPo safety.** Lithium cells can vent or ignite if shorted, punctured, or
+reverse-wired. Check polarity against the nice!nano silkscreen (**red = +,
+black = −**), never charge unattended, and stop immediately if a cell puffs or
+heats up.
+</Callout>
+
+<Callout type="info">
+The CAD/STL/DXF files aren't in the repo yet — their dimensions derive from the
+[PCB](/hardware/pcb) outline, so finalise the board first.
+</Callout>
+
+## Parts
+
+| Part | Process | Material | Notes |
+|---|---|---|---|
+| Top shell | 3D print | PLA / PETG | Encoder hole + keycap openings |
+| Bottom shell | 3D print | PLA / PETG | Battery pocket, USB-C cutout, switch slot |
+| Switch plate | Laser cut | 1.5 mm acrylic / FR4 | 14 × 14 mm switch cutouts |
+
+## 3D printing
+
+- **Material:** PLA indoors; **PETG** for warm edit bays (PLA softens with heat).
+- **Layer height:** 0.2 mm · **Walls:** 3 perimeters · **Infill:** 20–30%.
+- **Supports:** only under the USB-C and encoder overhangs.
+
+### Cutouts to include
+
+- **USB-C** aligned to the nice!nano edge
+- **Encoder** hole for the EC11K bushing (~Ø7 mm) + knob clearance
+- **Power switch** slot on a side wall
+- **M2** screw bosses / heat-set insert holes matching the PCB
+
+## Laser-cut switch plate
+
+- MX cutout = **14.0 × 14.0 mm** (use Choc spacing for Kailh Choc).
+- Match the 3×7 key pitch to the PCB (typically 19.05 mm for MX).
+- 1.5 mm thickness seats MX clips correctly.
+- Export the plate as **DXF**.
+
+## Assembly
+
+1. Seat PCB + plate into the bottom shell.
+2. Route the battery into its pocket (away from pins, a little slack).
+3. Fit the encoder knob through the top; attach the top shell.
+4. Screw together with M2 hardware.
+
+## First power-on
+
+1. Flip the power switch on.
+2. Pair **"Nudge Controller"** from your host's Bluetooth menu.
+3. Open a text editor and confirm input, then try DaVinci Resolve.
+
+If nothing appears, see [Firmware → Flashing](/firmware/flashing) troubleshooting.

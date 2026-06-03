@@ -7,6 +7,26 @@ Resolve before building the physical hardware.
 
 ---
 
+## Open on GitHub Pages (no install on the iPad)
+
+The controller UI is published as a static page:
+
+**https://stephanteig.github.io/nudge-controller/controller**
+
+Open that on your iPad — no files to copy. Because the page is served from
+GitHub Pages (not your Mac), it can't guess your Mac's address, so on first load
+it asks for your **Mac's local IP** and saves it to `localStorage`:
+
+1. On your Mac, find the IP: `ipconfig getifaddr en0`
+2. Run the local server (`npm start`, see below).
+3. On the iPad page, enter the IP and tap **Connect**.
+4. Change it any time via the ⚙ button in the status bar.
+
+The Node.js server still runs locally on your Mac — it's what injects the
+keystrokes via robotjs. GitHub Pages only serves the UI.
+
+---
+
 ## Requirements
 - Mac (macOS 12+)
 - Node.js 18+ → https://nodejs.org

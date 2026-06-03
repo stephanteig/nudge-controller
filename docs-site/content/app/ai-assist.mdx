@@ -1,0 +1,35 @@
+---
+title: AI Assist
+---
+
+import { Callout } from 'nextra/components'
+
+# AI Assist
+
+Describe how you edit in plain language and Claude proposes a full 21-key layout
+plus encoder mapping. Review the suggestion, then apply it into the editor.
+
+## Using it
+
+1. Paste your **Anthropic API key** (stored only in `localStorage`).
+2. Describe your editing style — e.g. *"fast-paced multicam interviews, camera
+   selects up top, trim on the encoder, undo/redo easy to reach."*
+3. Click **Suggest a layout**, review the preview grid, then **Apply to editor**.
+
+<Callout type="info">
+The app calls the Anthropic API directly with model **`claude-sonnet-4-6`**,
+using the `anthropic-dangerous-direct-browser-access` header. Your key never
+leaves the machine except in that direct call to `api.anthropic.com`.
+</Callout>
+
+## How it works
+
+The component sends a system prompt that constrains Claude to return **strict
+JSON** matching the layout shape (`name`, 21 `keys`, and `encoder` modes). The
+response is parsed (tolerating stray prose/fences) and previewed before it
+touches your working layout — nothing is applied until you click **Apply**.
+
+<Callout type="warning">
+AI suggestions are a starting point. Always sanity-check combos against your NLE
+before flashing — especially destructive ones like ripple delete.
+</Callout>

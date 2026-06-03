@@ -1,0 +1,32 @@
+---
+title: Hardware
+---
+
+# Hardware
+
+The physical build is a single PCB plus a case. The board carries:
+
+- a **nice!nano v2** socket (MCU + BLE + LiPo charger),
+- a **21-key matrix** (3 rows × 7 columns) of MX/Choc switches with per-key diodes,
+- an **Alps EC11K** rotary encoder with two 10 kΩ pull-ups and a push-switch,
+- a **JST-PH 2.0 mm** LiPo connector and an inline power switch.
+
+## Sections
+
+- [Bill of Materials](/hardware/bom) — every part, price, and source (~$130 total)
+- [PCB](/hardware/pcb) — KiCad design + Gerber export + matrix/encoder assembly
+- [Case & Plate](/hardware/case) — 3D-printed enclosure + laser-cut switch plate
+
+<div className="nx-mt-6 nx-rounded-lg nx-border nx-border-amber-500/30 nx-bg-amber-500/5 nx-p-4">
+**Status:** the KiCad project and case CAD are not in the repo yet — the PCB and
+case pages are setup/spec guides. A few firmware pin assignments are placeholders
+until the board is finalised (see [Firmware → Setup](/firmware/setup)).
+</div>
+
+## Hardware specs
+
+- **MCU:** nice!nano v2 (nRF52840), Pro Micro pinout
+- **Encoder:** Alps EC11K, 24 PPR, metal shaft, ~100k-cycle life
+- **Matrix:** 21 keys, 3 rows × 7 columns, 1N4148 per key
+- **Battery:** 3.7 V 2000 mAh LiPo, charged by the nice!nano's onboard BQ24072
+- **Wireless:** Bluetooth 5.0, up to 5 paired host profiles

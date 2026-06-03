@@ -1,0 +1,55 @@
+---
+title: Firmware Setup
+---
+
+import { Callout } from 'nextra/components'
+
+# Firmware Setup
+
+You don't compile locally — you push a config repo and GitHub Actions builds the
+`.uf2`.
+
+## Get a ZMK config repo
+
+**Option A — use this repo's `firmware/` directly.** It already includes
+`build.yaml`:
+
+```yaml
+include:
+  - board: nice_nano_v2
+    shield: nudge_controller
+```
+
+A `build-firmware.yml` workflow runs on changes to `firmware/**` and uploads the
+`.uf2` as an artifact.
+
+**Option B — fork [zmk-config](https://github.com/zmkfirmware/zmk-config-template)**
+and copy in `config/nudge_controller.*` and `boards/shields/nudge_controller/`.
+
+<Callout type="info">
+In a clean ZMK shield module the `.overlay` lives in
+`boards/shields/nudge_controller/`. This repo keeps it under `config/` for
+layout convenience — move/copy it if your fork expects the standard location.
+</Callout>
+
+## Hardware pins (source of truth)
+
+| Function | Pins |
+|---|---|
+| Matrix rows | `D4` (P0.28), `D5` (P0.30), `D15` (P1.13) |
+| Matrix cols | `D6` (P1.11), `D7` (P0.06), `D8` (P0.08), `D9` (P0.17), `D10` (P0.20), `D16` (P0.10), `D14` (P1.12) |
+| Encoder A / B / SW | P0.31 / P0.29 / P0.02 (F4 / F5 / F6) |
+
+<Callout type="warning">
+**Verify before trusting:** `D15` (P1.13) as the 3rd row, and the encoder pins
+(P0.31 / P0.29 / P0.02), must be confirmed against a physical nice!nano v2 and
+the PCB. They're marked `TODO` in `nudge_controller.overlay`.
+</Callout>
+
+## Power / battery
+
+`nudge_controller.conf` enables BLE, battery reporting, and deep sleep
+(`CONFIG_ZMK_SLEEP=y`, 15-min idle). Asleep the board draws tens of µA; it wakes
+on the next keypress or encoder turn.
+
+Next: [Layers & Keymap](/firmware/layers).

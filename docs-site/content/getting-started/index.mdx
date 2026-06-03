@@ -1,0 +1,31 @@
+---
+title: Getting Started
+---
+
+# Getting Started
+
+There are three ways into the project, depending on how far you want to go:
+
+1. **Try the layout first** — open the [iPad prototype](/prototype) on a tablet
+   and a small server on your Mac. No soldering, no parts. The fastest way to
+   feel whether the layout works for your editing.
+2. **Build the hardware** — order the parts from the
+   [bill of materials](/hardware/bom) and follow the [PCB](/hardware/pcb) and
+   [case](/hardware/case) guides.
+3. **Flash the firmware** — the controller runs [ZMK](/firmware); a GitHub
+   Actions build produces the `.uf2` you drag onto the board.
+
+The [configurator app](/app) ties it together: design a layout, import your
+Resolve shortcuts, and generate a keymap.
+
+## Project layout
+
+| Folder | What it is |
+|---|---|
+| `prototype/` | iPad web app + Mac WebSocket server |
+| `firmware/` | ZMK shield for nice!nano v2 |
+| `hardware/` | PCB + case guides (CAD coming) |
+| `app/` | Electron + React configurator |
+| `docs/` · `docs-site/` | Source guides + this Nextra site |
+
+Continue to [Prerequisites](/getting-started/prerequisites).

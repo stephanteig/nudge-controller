@@ -1,0 +1,42 @@
+---
+title: Layers & Keymap
+---
+
+# Layers & Keymap
+
+The keymap has four layers. The 21 keys are identical across the three editing
+layers; only the **encoder** behaves differently. Defaults target DaVinci
+Resolve's Cut/Edit page.
+
+| Layer | Name | Encoder rotation | How you reach it |
+|------:|------|------------------|------------------|
+| 0 | `SCROLL` | ↑ / ↓ (timeline scroll) | default |
+| 1 | `JOG` | Shift+→ / Shift+← (frame trim) | tap encoder from Scroll |
+| 2 | `SHUTTLE` | ] / [ (speed ramp) | tap encoder from Jog |
+| 3 | `BT` | profile select | **hold** the encoder push |
+
+## The encoder button
+
+- **Tap** to cycle **Scroll → Jog → Shuttle → Scroll**.
+- **Hold** for the Bluetooth layer (top row = profiles 0–4 via `BT_SEL`, plus
+  `BT_CLR` to clear the current pairing).
+
+This is a ZMK hold-tap (`enc_btn`): `tap → &to <next layer>`, `hold → &mo BT`.
+
+## Key grid (editing layers)
+
+```
+Row 0:  CAM1   CAM2   CAM3   CAM4   CAM5   CAM6   CAM7    (Ctrl+1..7, multicam)
+Row 1:  MARKIN MARKOUT ADDEDIT INSERT OWRITE RIPDEL BLADE
+Row 2:  UNDO   REDO   ZOOM+  ZOOM−  REV    STOP   PLAY
+```
+
+## Editing the keymap
+
+- **Easiest:** use the [configurator app](/app/layout-editor) — drag keys, import
+  your Resolve shortcuts, generate a keymap.
+- **By hand:** edit `config/nudge_controller.keymap`, push, reflash. ZMK keycodes:
+  <https://zmk.dev/docs/keymaps/list-of-keycodes>.
+
+The action vocabulary matches the [prototype](/prototype/customising), so a
+layout carries across prototype → firmware → app.

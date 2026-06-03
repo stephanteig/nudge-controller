@@ -68,6 +68,7 @@ Every time a meaningful change is made to this repo:
 - [ ] Add `docs/img/hero.png` (broken image in README)
 - [x] Add `.github/workflows/build-firmware.yml` for ZMK GitHub Actions build
 - [x] Add `firmware/build.yaml` ZMK build matrix
+- [x] **ZMK firmware build is green** — Actions produces the `firmware` artifact (the `.uf2`). Verified on `nice_nano@2.0.0//zmk`.
 - [ ] Configure GitHub Pages to deploy from the `gh-pages` branch (repo Settings → Pages) — required before the docs/prototype URLs go live
 - [x] Verify `docs-site` builds locally — `npm ci && npm run build` produces `out/` with all 19 pages
 - [x] Commit `docs-site/package-lock.json`; CI uses `npm ci`
@@ -77,6 +78,19 @@ Every time a meaningful change is made to this repo:
 > 4.x (e.g. 4.4.3) made `z.custom()` reject `undefined`, which breaks the theme's
 > `Layout` schema (`children` validated as required) → "expected nonoptional,
 > received undefined → at children". Keep zod pinned until upstream is fixed.
+
+> **Firmware build notes (ZMK on Zephyr 4.1 / hardware-model-v2) — gotchas that
+> each cost a CI round; keep them fixed:**
+> 1. Board id is `nice_nano@2.0.0//zmk` (not `nice_nano_v2`).
+> 2. Layout must be ZMK-canonical: `firmware/west.yml` (`self.path: firmware`,
+>    matching `config_path: firmware`), keymap + `.conf` at the `firmware/` root,
+>    shield `.overlay` under `boards/shields/nudge_controller/`.
+> 3. No `CONFIG_ZMK_ENCODER` symbol exists — enable the encoder via
+>    `CONFIG_EC11=y` + the `alps,ec11`/`zmk,keymap-sensors` nodes only.
+> 4. Don't override `CONFIG_BT_MAX_CONN`/`BT_MAX_PAIRED` (peripheral; ZMK
+>    defaults to 5 profiles).
+> 5. BLE name "Nudge Controller" is 16 chars; ZMK defaults `BT_DEVICE_NAME_MAX`
+>    to 16 and Zephyr asserts `len < MAX`, so the `.conf` sets it to 20.
 
 ## Stack reference
 - **Firmware:** ZMK (not QMK) — Bluetooth-first, nRF52840
